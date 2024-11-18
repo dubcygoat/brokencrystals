@@ -10,7 +10,7 @@ from aws_call import get_secret
 secret_name = 'Defectdojo'
 
 #getsecret variables
-defect_dojo_Api ="Token" +' ' + get_secret(secret_name)
+defect_dojo_Api =get_secret(secret_name)
 
 #the url to the DefectDojo API
 url= 'https://demo.defectdojo.org/api/v2/import-scan'
