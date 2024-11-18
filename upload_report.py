@@ -1,6 +1,7 @@
 # Import the requests library
 import sys
 import requests
+from datetime import date
 #from config import defect_dojo_Api
 from aws_call import get_secret
 
@@ -14,6 +15,8 @@ defect_dojo_Api ="Token" +' ' + get_secret(secret_name)
 #the url to the DefectDojo API
 url= 'https://demo.defectdojo.org/api/v2/import-scan'
 
+#setting the scan date
+today = date.today().strftime('%Y-%m-%d')
 
 #set the file name to the first argument
 filename=sys.argv[1]
@@ -37,10 +40,12 @@ headers={'Authorization':defect_dojo_Api}
 
 #data for the request
 data = {'active': 'true',
+        'scan_date':today,
         'verified': 'true',
         'scan_type':scan_report,
         'minimum_severity': 'Medium',
         'engagement': 17,
+        'product_name':'Brokencrystals'
        }
 
 #open the file and read it
