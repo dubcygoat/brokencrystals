@@ -45,7 +45,8 @@ data = {'active': 'true',
         'scan_type':scan_report,
         'minimum_severity': 'Medium',
         'engagement': 17,
-        'product_name':'Brokencrystals'
+        'product_name':'Brokencrystals',
+        'product': 9
        }
 
 #open the file and read it
