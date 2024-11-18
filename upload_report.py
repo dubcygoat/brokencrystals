@@ -40,7 +40,7 @@ data = {'active': 'true',
         'verified': 'true',
         'scan_type':scan_report,
         'minimum_severity': 'Medium',
-        'engagement': '[insert engagement id here]',
+        'engagement': 17,
        }
 
 #open the file and read it
