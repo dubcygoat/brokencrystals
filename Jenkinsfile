@@ -11,7 +11,7 @@ pipeline {
         SNYK_HOME = 'snyk@latest'
         DOCKER_CRED = credentials('docker')
         DOCKER_HUB = 'https://hub.docker.com/repository/docker/dubcygoat/brokencrystals'
-        LOCATION = '/var/lib/jenkins/workspace/Brokencrystals@2'
+        //LOCATION = '/var/lib/jenkins/workspace/Brokencrystals@2'
         LOCATION1 = '/app/data'
         // SEMGREP_BASELINE_REF = ""
         SEMGREP_PATH = '/var/lib/jenkins/.local/lib/python3.10/site-packages/semgrep'
@@ -56,8 +56,8 @@ pipeline {
         stage('Git Leaks Scan') {
             steps {
                 script {
-                    sh 'rm -rf gitleaks-report.json'
-                    sh 'docker run --rm -v "${LOCATION}:${LOCATION1}" zricethezav/gitleaks:latest detect --source="${LOCATION1}" --report-format="json"  --report-path="${LOCATION1}/gitleaks-report.json" || true'
+                    //sh 'rm -rf gitleaks-report.json'
+                    sh 'docker run --rm -v "${PWD}:${LOCATION1}" zricethezav/gitleaks:latest detect --source="${LOCATION1}" --report-format="json"  --report-path="${LOCATION1}/gitleaks-report.json" || true'
                 }
             }
         }
@@ -146,7 +146,7 @@ pipeline {
             steps {
                 script {
                     // Start OWASP ZAP Docker container for scanning
-                        sh 'docker run --user root -v $(pwd):/zap/wrk/:rw --rm -t zaproxy/zap-stable zap-baseline.py -t http://$(ip -f inet -o addr show ens33 | awk \'{print $4}\' | cut -d \'/\' -f 1):3000 -r zap_report.json || true'
+                        sh 'docker run --user root -v $(pwd):/zap/wrk/:rw --rm -t zaproxy/zap-stable zap-baseline.py -t http://$(ip -f inet -o addr show ens33 | awk \'{print $4}\' | cut -d \'/\' -f 1):3000 -J zap_report.json || true'
 
                 }
             }
@@ -160,6 +160,8 @@ pipeline {
                     archiveArtifacts artifacts: 'dependency-check-report.xml', allowEmptyArchive: true
                      // Archive the Dependency report for later analysis
                     archiveArtifacts artifacts: 'semgrep-report.json', allowEmptyArchive: true
+                      // Archive the Dependency report for later analysis
+                    archiveArtifacts artifacts: 'gitleaks-report.json', allowEmptyArchive: true
                       // Archive the Dependency report for later analysis
                     archiveArtifacts artifacts: 'qodana-report.html', allowEmptyArchive: true
                     

@@ -20,12 +20,16 @@ filename=sys.argv[1]
 
 #if else statement to check the scan type
 scan_report = ''
-if filename == '[insert filename and extension here]':
-    scan_report = 'Insert scan type here from DefectDojo'
-elif filename == '[insert filename and extension here]':
-    scan_report = 'Insert scan type here from DefectDojo'
-elif filename == '[insert filename and extension here]':
-    scan_report = 'Insert scan type here from DefectDojo'
+if filename == 'zap_report.json':
+    scan_report = 'ZAP Scan'
+elif filename == 'trivyartifact.json':
+    scan_report = 'Trivy Scan'
+elif filename == 'dependency-check-report.xml':
+    scan_report = 'Dependency Check Scan'
+elif filename == 'semgrep-report.json':
+    scan_report = 'Semgrep JSON Report'
+elif filename == 'gitleaks-report.json':
+    scan_report = 'Gitleaks Scan'
 
 
 #header for the request 
