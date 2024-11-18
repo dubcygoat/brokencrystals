@@ -1,3 +1,5 @@
+#text files
+*.txt
 # compiled output
 /dist
 /client/build
@@ -34,3 +36,10 @@ lerna-debug.log*
 .vscode/*
 
 keycloak/db
+
+#pyc
+*.pyc
+
+#pdf
+*.pdf
+
