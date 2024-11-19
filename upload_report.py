@@ -2,7 +2,6 @@
 import sys
 import requests
 from datetime import date
-#from config import defect_dojo_Api
 from aws_call import get_secret
 
 
