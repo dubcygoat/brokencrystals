@@ -6,7 +6,6 @@ import json
 
 def get_secret(secret_name):
 
-    secret_name = secret_name
     region_name = "us-west-2"
 
     # Create a Secrets Manager client
