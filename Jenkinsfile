@@ -56,7 +56,7 @@ pipeline {
         stage('Git Leaks Scan') {
             steps {
                 script {
-                    //sh 'rm -rf gitleaks-report.json'
+                    sh 'rm -rf gitleaks-report.json'
                     sh 'docker run --rm -v "${PWD}:${LOCATION1}" zricethezav/gitleaks:latest detect --source="${LOCATION1}" --report-format="json"  --report-path="${LOCATION1}/gitleaks-report.json" || true'
                 }
             }
@@ -168,6 +168,23 @@ pipeline {
                 }
             }
         }
+    stage('Upload to defectdojo'){
+             steps{ 
+             script {
+                    // upload scripts
+                         //sh 'pip3 install requests'
+                        //sh 'pip3 install boto3'
+                        sh 'pip3 install datetime'
+                        sh 'python3 upload_report.py zap_report.json'
+                        sh 'python3 upload_report.py trivyartifact.json'
+                        sh 'python3 upload_report.py dependency-check-report.xml' 
+                        sh 'python3 upload_report.py semgrep-report.json'
+                        sh 'python3 upload_report.py gitleaks-report.json'
+    
+
+                }
+         }
     }
+}
 }
 
