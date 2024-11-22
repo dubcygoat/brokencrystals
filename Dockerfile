@@ -81,12 +81,6 @@ ENV NPM_CONFIG_LOGLEVEL=verbose
 RUN npm config set cache /tmp/.npm-cache --global
 RUN npm cache clean --force
 
-# Set DNS to Google’s public DNS to mitigate potential DNS issues
-#RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
-
-# Install dependencies separately to handle network issues
-#RUN npm ci --no-audit || npm ci --no-audit
-
 # Build the server
 RUN npm install
 RUN npm run build:fast
