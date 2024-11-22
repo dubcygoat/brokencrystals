@@ -6,8 +6,8 @@ const generateToken = async (jwtType) => {
   const { headers } = await axios.post(
     `${process.env.SEC_TESTER_TARGET}/api/auth/jwt/${jwtType}/login`,
     {
-      user: 'admin',
-      password: 'admin',
+      user: process.env.DATABASE_USER,
+      password:process.env.DATABASE_PASSWORD,
       op: 'basic'
     }
   );
