@@ -11,7 +11,6 @@ pipeline {
         SNYK_HOME = 'snyk@latest'
         DOCKER_CRED = credentials('docker')
         DOCKER_HUB = 'https://hub.docker.com/repository/docker/dubcygoat/brokencrystals'
-        //LOCATION = '/var/lib/jenkins/workspace/Brokencrystals@2'
         LOCATION1 = '/app/data'
         // SEMGREP_BASELINE_REF = ""
         SEMGREP_PATH = '/var/lib/jenkins/.local/lib/python3.10/site-packages/semgrep'
@@ -22,16 +21,6 @@ pipeline {
       //  SEMGREP_TIMEOUT = "300"
     }
     agent any
-    //   agent {
-    //     docker {
-    //         args '''
-    //           -v "${PWD}":/data/project
-    //           --entrypoint=""
-    //           '''
-    //         image 'jetbrains/qodana-js:2024.2'
-    //     }
-    // }
-
     stages {
         stage('Clean Workspace') {
             steps {
@@ -47,12 +36,6 @@ pipeline {
                 }
             }
         }
-        // stage('Verify Environment') {
-        //     steps {
-        //         sh 'which semgrep || echo "Semgrep not found in PATH"'
-        //         sh 'pip3 show semgrep || echo "Semgrep not installed"'
-        //     }
-        // }
         stage('Git Leaks Scan') {
             steps {
                 script {
@@ -64,22 +47,15 @@ pipeline {
          stage('Qodana') {
             steps {
                  script {
-                     //sh 'rm -rf gitleaks-report.json'
                     sh '''docker run --rm -v "${PWD}:/data/project" -e QODANA_TOKEN=${QODANA_TOKEN}  jetbrains/qodana-js:2024.2 "qodana scan --save-report qodana-report.html" || true'''
                  }
-                 //sh '''qodana'''
             }
         }
         stage('Semgrep-Scan') {
           steps {
-            //sh 'pip3 install semgrep'
-            //sh ''
-            //sh '$SEMGREP_PATH --config=auto .'
             sh '''
              semgrep ci --json-output=$PWD/semgrep-report.json
              '''
-               //semgrep --version
-              //semgrep --config=auto .
           }
       }
        stage('SonarQube Analysis') {
@@ -102,9 +78,6 @@ pipeline {
             steps {
               script {
                     // Install Snyk if not found, to avoid "command not found" errors
-                    //sh 'mkdir -p ~/.npm-global'
-                    //sh  "npm config set prefix '~/.npm-global'"
-                    //sh  'export PATH=~/.npm-global/bin:$PATH'
                     sh  'npm install -g snyk'
 
               }
@@ -180,7 +153,7 @@ pipeline {
                         sh 'python3 upload_report.py dependency-check-report.xml' 
                         sh 'python3 upload_report.py semgrep-report.json'
                         sh 'python3 upload_report.py gitleaks-report.json'
-    
+
 
                 }
          }
