@@ -538,7 +538,7 @@ export class UsersController {
       if (file_name.endsWith('.svg')) {
         const xml = file_buffer.toString();
         const xmlDoc = parseXml(xml, {
-          noent: true,
+          noent: false,
           dtdvalid: true,
           recover: true
         });
