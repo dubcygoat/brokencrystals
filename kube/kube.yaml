@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: brokencrystals
+        image: dubcygoat/brokencrystals # Replace with your container image name
+        ports:
+        - containerPort: 3000   # Port for the frontend
+        - containerPort: 5432 # Port for the backend
+        - containerPort: 1080 # Port for the API
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: brokencrystals
+spec:
+  selector:
+    app: brokencrystals
+  ports:
+  - name: frontend
+    protocol: TCP
+    port: 80
+    targetPort: 3000
+  - name: backend
+    protocol: TCP
+    port: 5432
+    targetPort: 5432
+  - name: api
+    protocol: TCP
+    port: 1080
+    targetPort: 1080
+  type: 'LoadBalancer' # Change to 'LoadBalancer' or 'ClusterIP' as needed
