@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
       - name: brokencrystals
-        image: dubcygoat/brokencrystals:v1 # Replace with your container image name
+        image: dubcygoat/brokencrystals:v1 # Using the actual container image name
         ports:
         - containerPort: 3000   # Port for the frontend
-        - containerPort: 5432 # Port for the backend
-        - containerPort: 1080 # Port for the API
+        - containerPort: 5432 # Port for the database
+        - containerPort: 1080 # Port for the mailcatcher
         resources:
           requests:
             memory: "128Mi"
@@ -28,6 +28,11 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "1"
+        env:
+        - name: DB_HOST
+          value: "db"  # Database service name (ensure this matches your service name)
+        - name: DB_PORT
+          value: "5432"
         livenessProbe:
           httpGet:
             path: /healthz # Adjust path for your application's health endpoint
@@ -61,4 +66,4 @@ spec:
     protocol: TCP
     port: 1080
     targetPort: 1080
-  type: 'NodePort' # Change to 'LoadBalancer' or 'ClusterIP' as needed
+  type: 'LoadBalancer' # Using 'LoadBalancer' for external access
