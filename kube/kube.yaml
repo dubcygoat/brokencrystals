@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: brokencrystals
-        image: dubcygoat/brokencrystals # Replace with your container image name
+        image: dubcygoat/brokencrystals:v1 # Replace with your container image name
         ports:
         - containerPort: 3000   # Port for the frontend
         - containerPort: 5432 # Port for the backend
