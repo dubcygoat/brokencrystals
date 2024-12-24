@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: brokencrystals
   labels:
-    app: my-app
+    app: brokencrystals
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: my-app
+      app: brokencrystals
   template:
     metadata:
       labels:
-        app: my-app
+        app: brokencrystals
     spec:
       containers:
       - name: brokencrystals
@@ -21,6 +21,25 @@ spec:
         - containerPort: 3000   # Port for the frontend
         - containerPort: 5432 # Port for the backend
         - containerPort: 1080 # Port for the API
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "256Mi"
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /healthz # Adjust path for your application's health endpoint
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /readiness # Adjust path for your application's readiness endpoint
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -42,4 +61,4 @@ spec:
     protocol: TCP
     port: 1080
     targetPort: 1080
-  type: 'LoadBalancer' # Change to 'LoadBalancer' or 'ClusterIP' as needed
+  type: 'NodePort' # Change to 'LoadBalancer' or 'ClusterIP' as needed
