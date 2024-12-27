@@ -22,7 +22,8 @@ RUN npm install
 RUN npm run build
 RUN npm prune --production
 
-# Copy and build client project
+# Create client directory and copy client project files
+RUN mkdir -p ./client
 COPY --chown=node:node client/package*.json ./client/
 COPY --chown=node:node client/src ./client/src
 COPY --chown=node:node client/public ./client/public

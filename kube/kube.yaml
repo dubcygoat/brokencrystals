@@ -16,11 +16,9 @@ spec:
     spec:
       containers:
       - name: brokencrystals
-        image: dubcygoat/brokencrystals:v1 # Using the actual container image name
+        image: dubcygoat/brokencrystals:v1
         ports:
-        - containerPort: 3000   # Port for the frontend
-        - containerPort: 5432 # Port for the database
-        - containerPort: 1080 # Port for the mailcatcher
+        - containerPort: 3000  # Application's primary port
         resources:
           requests:
             memory: "128Mi"
@@ -29,19 +27,29 @@ spec:
             memory: "256Mi"
             cpu: "1"
         env:
-        - name: DB_HOST
-          value: "db"  # Database service name (ensure this matches your service name)
-        - name: DB_PORT
+        - name: DATABASE_HOST
+          value: "db"  # Name of the database service
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DATABASE_USER
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DATABASE_PASSWORD
+        - name: DATABASE_PORT
           value: "5432"
         livenessProbe:
           httpGet:
-            path: /healthz # Adjust path for your application's health endpoint
+            path: /health  
             port: 3000
           initialDelaySeconds: 10
           periodSeconds: 15
         readinessProbe:
           httpGet:
-            path: /readiness # Adjust path for your application's readiness endpoint
+            path: /ready  
             port: 3000
           initialDelaySeconds: 5
           periodSeconds: 10
@@ -54,16 +62,7 @@ spec:
   selector:
     app: brokencrystals
   ports:
-  - name: frontend
-    protocol: TCP
+  - protocol: TCP
     port: 80
     targetPort: 3000
-  - name: backend
-    protocol: TCP
-    port: 5432
-    targetPort: 5432
-  - name: api
-    protocol: TCP
-    port: 1080
-    targetPort: 1080
-  type: 'LoadBalancer' # Using 'LoadBalancer' for external access
+  type: LoadBalancer
