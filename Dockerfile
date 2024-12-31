@@ -18,7 +18,7 @@ RUN npm config set cache /tmp/.npm-cache --global
 RUN npm cache clean --force
 
 # Build the server
-#RUN npm install
+RUN npm install
 RUN npm run build
 RUN npm prune --production
 
