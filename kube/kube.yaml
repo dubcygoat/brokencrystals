@@ -21,11 +21,11 @@ spec:
         - containerPort: 3000  # Application's primary port
         resources:
           requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
             memory: "128Mi"
             cpu: "500m"
-          limits:
-            memory: "256Mi"
-            cpu: "1"
         env:
         - name: DATABASE_HOST
           value: "db"  # Name of the database service
