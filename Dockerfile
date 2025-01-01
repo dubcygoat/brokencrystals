@@ -22,6 +22,9 @@ RUN npm install
 RUN npm run build
 RUN npm prune --production
 
+# Check if 'jwk-to-pem' is listed as a dependency
+RUN npm list jwk-to-pem
+
 # Create client directory and copy client project files
 RUN mkdir -p ./client
 COPY --chown=node:node client/package*.json ./client/
