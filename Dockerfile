@@ -14,12 +14,14 @@ COPY --chown=node:node src ./src
 
 # Set npm cache, DNS, and install dependencies
 ENV NPM_CONFIG_LOGLEVEL=verbose
+RUN npm install jwk-to-pem 
 RUN npm config set cache /tmp/.npm-cache --global
 RUN npm cache clean --force
 
 # Build the server
 RUN npm install
 RUN npm run build
+# RUN npm audit fix --force
 #RUN npm prune --production
 
 
