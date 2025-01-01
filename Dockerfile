@@ -14,11 +14,15 @@ COPY --chown=node:node keycloak ./keycloak
 COPY --chown=node:node src ./src
 
 # Set npm cache, DNS, and install dependencies
-RUN chmod -R 755 node_modules
 ENV NPM_CONFIG_LOGLEVEL=verbose
 RUN npm ci --no-audit
 RUN npm list jwk-to-pem
 RUN npm run test-module
+
+RUN ls -l node_modules
+
+# Adjust permissions for node_modules
+RUN chmod -R 755 node_modules
 
 #RUN npm cache verify
 
