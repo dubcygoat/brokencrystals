@@ -16,7 +16,8 @@ COPY --chown=node:node src ./src
 ENV NPM_CONFIG_LOGLEVEL=verbose
 RUN npm install jwk-to-pem 
 RUN npm config set cache /tmp/.npm-cache --global
-RUN npm cache clean --force
+#RUN npm cache clean --force
+RUN npm cache verify
 
 # Build the server
 RUN npm install
