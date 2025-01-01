@@ -14,13 +14,16 @@ COPY --chown=node:node src ./src
 
 # Set npm cache, DNS, and install dependencies
 ENV NPM_CONFIG_LOGLEVEL=verbose
-RUN npm install jwk-to-pem --save
 RUN npm ci --no-audit
+RUN npm list jwk-to-pem
+
 #RUN npm cache verify
 
 # Build the server
 RUN npm run build
 RUN npm prune --production
+RUN npm list jwk-to-pem
+
 
 
 # Create client directory and copy client project files
