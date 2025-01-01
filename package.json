@@ -1,8 +1,8 @@
 {
 	"name": "broken-crystals",
 	"version": "0.0.1",
-	"description": "",
-	"author": "",
+	"description": "A project for demonstrating DevSecOps practices.",
+	"author": "GOAT",
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
@@ -51,7 +51,7 @@
 		"class-transformer": "^0.5.1",
 		"dot": "^1.1.3",
 		"dotenv": "^16.4.5",
-		"jwk-to-pem": "^2.0.6",
+		"jwk-to-pem": "^2.0.7",
 		"graphql": "^16.9.0",
 		"jose": "^5.9.2",
 		"jsonwebtoken": "^9.0.2",
@@ -98,7 +98,7 @@
 		}
 	},
 	"engines": {
-		"node": ">=18",
+		"node": "18.x",
 		"npm": ">=10"
 	},
 	"lint-staged": {

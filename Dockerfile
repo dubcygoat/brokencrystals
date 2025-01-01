@@ -20,10 +20,8 @@ RUN npm cache clean --force
 # Build the server
 RUN npm install
 RUN npm run build
-RUN npm prune --production
+#RUN npm prune --production
 
-# Check if 'jwk-to-pem' is listed as a dependency
-RUN npm list jwk-to-pem
 
 # Create client directory and copy client project files
 RUN mkdir -p ./client
@@ -42,7 +40,7 @@ ENV CYPRESS_INSTALL_BINARY=0
 # Install and build client dependencies
 RUN npm ci --prefix=client --no-audit
 RUN npm run build --prefix=client
-
+RUN npm ci --prefix=client
 # Switch to non-root user
 USER node
 
