@@ -14,15 +14,11 @@ COPY --chown=node:node src ./src
 
 # Set npm cache, DNS, and install dependencies
 ENV NPM_CONFIG_LOGLEVEL=verbose
-RUN npm install jwk-to-pem 
-RUN npm config set cache /tmp/.npm-cache --global
-#RUN npm cache clean --force
-RUN npm cache verify
+RUN npm ci --no-audit
+#RUN npm cache verify
 
 # Build the server
-RUN npm install
 RUN npm run build
-# RUN npm audit fix --force
 #RUN npm prune --production
 
 
@@ -43,7 +39,7 @@ ENV CYPRESS_INSTALL_BINARY=0
 # Install and build client dependencies
 RUN npm ci --prefix=client --no-audit
 RUN npm run build --prefix=client
-RUN npm ci --prefix=client
+
 # Switch to non-root user
 USER node
 
