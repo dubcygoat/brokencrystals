@@ -5,10 +5,10 @@ metadata:
   labels:
     app: brokencrystals
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: brokencrystals
+      app:  brokencrystals
   template:
     metadata:
       labels:
