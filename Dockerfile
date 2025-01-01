@@ -19,7 +19,7 @@ RUN npm ci --no-audit
 
 # Build the server
 RUN npm run build
-#RUN npm prune --production
+RUN npm prune --production
 
 
 # Create client directory and copy client project files
