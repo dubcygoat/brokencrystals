@@ -16,6 +16,7 @@
 		"start:prod": "node dist/main.js",
 		"lint": "eslint . --report-unused-disable-directives --max-warnings 0",
 		"test": "jest",
+		"test-module": "node -e \"require('jwk-to-pem'); console.log('Module works!');\"",
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:e2e": "jest --config ./test/jest-e2e.config.mjs",

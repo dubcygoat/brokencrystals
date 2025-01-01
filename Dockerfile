@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 
 # Copy necessary files
 COPY --chown=node:node package*.json ./
+COPY --chown=node:node package-lock.json ./
 COPY --chown=node:node tsconfig.build.json ./
 COPY --chown=node:node tsconfig.json ./
 COPY --chown=node:node nest-cli.fast.json ./
@@ -16,6 +17,7 @@ COPY --chown=node:node src ./src
 ENV NPM_CONFIG_LOGLEVEL=verbose
 RUN npm ci --no-audit
 RUN npm list jwk-to-pem
+RUN npm npm run test-module
 
 #RUN npm cache verify
 
