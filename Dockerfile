@@ -14,6 +14,7 @@ COPY --chown=node:node src ./src
 
 # Set npm cache, DNS, and install dependencies
 ENV NPM_CONFIG_LOGLEVEL=verbose
+RUN npm install jwk-to-pem --save
 RUN npm ci --no-audit
 #RUN npm cache verify
 

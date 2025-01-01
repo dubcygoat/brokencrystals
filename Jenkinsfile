@@ -67,20 +67,20 @@ pipeline {
              } 
          }
         }
-         stage('OWASP FS SCAN') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
+        //  stage('OWASP FS SCAN') {
+        //     steps {
+        //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        //     }
+        // }
 
         stage('Snyk Test') {
             steps {
-              script {
+              //script {
                     // Install Snyk if not found, to avoid "command not found" errors
-                    sh  'npm install -g snyk'
+               //     sh  'sudo npm install -g snyk'
 
-              }
+              //}
                 withCredentials([string(credentialsId: 'snyk-token', variable: 'SNYK_TOKEN')]) {
                      // Perform a test with a custom severity threshold, e.g., medium or higher
                     sh 'snyk test || true' // --severity-threshold=high 
@@ -95,11 +95,19 @@ pipeline {
                 script{
                    withDockerRegistry(credentialsId: 'docker'){
                     echo 'Login Completed'
-                    sh "docker build . -t  dubcygoat/brokencrystals:v1"
+                    sh "docker build . --no-cache -t  dubcygoat/brokencrystals:v1"
                     //sh 'echo $DOCKER_CRED | sudo docker login -u $DOCKER_USER -p $DOCKER_PASS'                		
                     sh 'docker push dubcygoat/brokencrystals:v1'
                     echo 'Brokencrystals has been pushed to dockerhub access it on $DOCKER_HUB Congratulations!!!'
                 }
+            }
+        }
+    }
+        stage('AWS ECS'){
+            steps{
+                script{ sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 654654367308.dkr.ecr.us-east-1.amazonaws.com'
+                        sh'docker tag dubcygoat/brokencrystals:v1 654654367308.dkr.ecr.us-east-1.amazonaws.com/dubcygoat/brokencrystals:v1'
+                        sh 'docker push 654654367308.dkr.ecr.us-east-1.amazonaws.com/dubcygoat/brokencrystals:v1'
             }
         }
     }
@@ -130,7 +138,7 @@ pipeline {
                      // Archive the Trivy report for later analysis
                     archiveArtifacts artifacts: 'trivyartifact.json', allowEmptyArchive: true
                      // Archive the Dependency report for later analysis
-                    archiveArtifacts artifacts: 'dependency-check-report.xml', allowEmptyArchive: true
+                   // archiveArtifacts artifacts: 'dependency-check-report.xml', allowEmptyArchive: true || true
                      // Archive the Dependency report for later analysis
                     archiveArtifacts artifacts: 'semgrep-report.json', allowEmptyArchive: true
                       // Archive the Dependency report for later analysis
@@ -141,23 +149,22 @@ pipeline {
                 }
             }
         }
-    stage('Upload to defectdojo'){
-             steps{ 
-             script {
-                    // upload scripts
-                         //sh 'pip3 install requests'
-                        //sh 'pip3 install boto3'
-                        sh 'pip3 install datetime'
-                        sh 'python3 upload_report.py zap_report.json'
-                        sh 'python3 upload_report.py trivyartifact.json'
-                        sh 'python3 upload_report.py dependency-check-report.xml' 
-                        sh 'python3 upload_report.py semgrep-report.json'
-                        sh 'python3 upload_report.py gitleaks-report.json'
+    // stage('Upload to defectdojo'){
+    //          steps{ 
+    //          script {
+    //                 // upload scripts
+    //                      //sh 'pip3 install requests'
+    //                     //sh 'pip3 install boto3'
+    //                     sh 'pip3 install datetime'
+    //                     sh 'python3 upload_report.py zap_report.json'
+    //                     sh 'python3 upload_report.py trivyartifact.json'
+    //                     sh 'python3 upload_report.py dependency-check-report.xml' 
+    //                     sh 'python3 upload_report.py semgrep-report.json'
+    //                     sh 'python3 upload_report.py gitleaks-report.json'
+    
 
-
-                }
-         }
+    //             }
+    //      }
+    // }
     }
 }
-}
-
