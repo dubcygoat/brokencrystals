@@ -22,6 +22,8 @@ RUN npm run test-module
 RUN ls -l node_modules
 
 # Adjust permissions for node_modules
+# Change ownership of node_modules to the node user
+RUN chown -R node:node node_modules
 RUN chmod -R 755 node_modules
 
 #RUN npm cache verify
