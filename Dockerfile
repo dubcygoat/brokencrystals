@@ -17,7 +17,7 @@ COPY --chown=node:node src ./src
 ENV NPM_CONFIG_LOGLEVEL=verbose
 RUN npm ci --no-audit
 RUN npm list jwk-to-pem
-RUN npm npm run test-module
+RUN npm run test-module
 
 #RUN npm cache verify
 
