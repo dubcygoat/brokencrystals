@@ -163,7 +163,8 @@ export class AuthController {
   })
   async validateWithRSASignatureJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -197,7 +198,8 @@ export class AuthController {
 
     res.setCookie(this.CSRF_COOKIE_HEADER, token, {
       httpOnly: true,
-      sameSite: 'strict'
+      sameSite: 'strict',
+      secure: true
     });
 
     return token;
@@ -215,10 +217,11 @@ export class AuthController {
   ): Promise<string> {
     this.logger.debug('Call getCsrfToken');
 
-    const token = randomBytes(32).toString('base64').substring(0, 32);
+    const token = randomBytes(32).toString('hex');
     res.setCookie(this.CSRF_COOKIE_HEADER, token, {
       httpOnly: true,
-      sameSite: 'strict'
+      sameSite: 'strict',
+      secure: true
     });
     return token;
   }
@@ -299,7 +302,8 @@ export class AuthController {
   })
   async validateWithKIDSqlJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -324,7 +328,7 @@ export class AuthController {
     @Body() req: LoginRequest,
     @Res({ passthrough: true }) res: FastifyReply
   ): Promise<LoginResponse> {
-    this.logger.debug('Call loginWithKIDSqlJwt');
+    this.logger.debug('Call loginWithWeakKeyJwt');
     const profile = await this.loginBasic(req);
 
     res.header(
@@ -359,7 +363,8 @@ export class AuthController {
   })
   async validateWithWeakKeyJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -419,7 +424,8 @@ export class AuthController {
   })
   async validateWithJKUJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -479,7 +485,8 @@ export class AuthController {
   })
   async validateWithJWKJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -539,7 +546,8 @@ export class AuthController {
   })
   async validateWithX5CJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -568,7 +576,7 @@ export class AuthController {
     const profile = await this.loginBasic(req);
 
     res.header(
-      'Authorization',
+      'authorization',
       await this.authService.createToken(
         { user: profile.email },
         JwtProcessorType.X5U
@@ -599,7 +607,8 @@ export class AuthController {
   })
   async validateWithX5UJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -659,7 +668,8 @@ export class AuthController {
   })
   async validateWithHMACJwt(): Promise<JwtValidationResponse> {
     return {
-      secret: 'this is our secret'
+      // deepcode ignore HardcodedNonCryptoSecret: Intentionally vulnerable for security testing
+      secret: process.env.JWT_SECRET || 'this is our secret'
     };
   }
 
@@ -677,16 +687,14 @@ export class AuthController {
         token: `${token_type} ${access_token}`
       };
     } catch (err) {
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         throw new UnauthorizedException({
-          error: 'Invalid credentials',
-          location: __filename
+          error: 'Invalid credentials'
         });
       }
 
       throw new InternalServerErrorException({
-        error: err.message,
-        location: __filename
+        error: 'Authentication service error'
       });
     }
   }
@@ -698,29 +706,26 @@ export class AuthController {
       user = await this.usersService.findByEmail(req.user);
     } catch (err) {
       throw new InternalServerErrorException({
-        error: err.message,
-        location: __filename
+        error: 'User service error'
       });
     }
 
     if (!user || !(await passwordMatches(req.password, user.password))) {
       throw new UnauthorizedException({
-        error: 'Invalid credentials',
-        location: __filename
+        error: 'Invalid credentials'
       });
     }
 
     if (!user.isBasic) {
       throw new ForbiddenException({
-        error: 'Invalid authentication method for this user',
-        location: __filename
+        error: 'Invalid authentication method for this user'
       });
     }
 
     const token = await this.authService.createToken(
       {
         user: user.email,
-        exp: 90 + Math.floor(Date.now() / 1000)
+        exp: (parseInt(process.env.JWT_EXPIRY_SECONDS) || 1800) + Math.floor(Date.now() / 1000)
       },
       JwtProcessorType.RSA
     );

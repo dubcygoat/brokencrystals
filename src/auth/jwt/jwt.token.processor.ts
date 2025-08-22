@@ -19,11 +19,23 @@ export abstract class JwtTokenProcessor {
     }
     const headerStr = Buffer.from(parts[0], 'base64').toString('ascii');
     this.log.debug(`Jwt token header is ${headerStr}`);
-    const header: JwtHeader = JSON.parse(headerStr);
+    
+    let header: JwtHeader;
+    try {
+      header = JSON.parse(headerStr);
+    } catch (err) {
+      throw new Error('Invalid JWT header format');
+    }
 
     const payloadStr = Buffer.from(parts[1], 'base64').toString('ascii');
     this.log.debug(`Jwt token (None alg) payload is ${payloadStr}`);
-    const payload = JSON.parse(payloadStr);
+    
+    let payload: unknown;
+    try {
+      payload = JSON.parse(payloadStr);
+    } catch (err) {
+      throw new Error('Invalid JWT payload format');
+    }
 
     return [header, payload];
   }
@@ -42,10 +54,11 @@ export abstract class JwtTokenProcessor {
       throw new Error('Invalid certificate');
     }
 
-    const key = chainText.slice(
-      0,
-      idx + JwtTokenProcessor.END_CERTIFICATE_MARK.length
-    );
+    const endMarkerLength = chainText.indexOf(JwtTokenProcessor.END_CERTIFICATE_MARK) > -1 
+      ? JwtTokenProcessor.END_CERTIFICATE_MARK.length 
+      : JwtTokenProcessor.END_PUBLIC_KEY_MARK.length;
+    
+    const key = chainText.slice(0, idx + endMarkerLength);
     this.log.debug(`Extracted key\n${key}`);
     return key;
   }

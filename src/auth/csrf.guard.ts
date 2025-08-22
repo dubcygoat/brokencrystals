@@ -48,8 +48,7 @@ export class CsrfGuard implements CanActivate {
 
   private throwError() {
     throw new UnauthorizedException({
-      error: 'Invalid credentials',
-      location: __filename
+      error: 'Invalid credentials'
     });
   }
 }
