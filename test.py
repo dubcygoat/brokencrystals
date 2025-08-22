@@ -1,1 +1,4 @@
-apikey = '123456789abcdef'
+import os
+
+
+apikey = os.environ.get("API_KEY")
